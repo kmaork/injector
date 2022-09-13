@@ -4,7 +4,7 @@ on:
   pull_request:
 
 jobs:
-  tests_on_ubuntu_x86_64:
+  tests_on_ubuntu_x86_64_and_i686:
     name: Tests on Ubuntu (x86_64 and i686)
     runs-on: ubuntu-latest
     steps:
@@ -47,10 +47,17 @@ jobs:
       run: |
         cd tests && .\test-prog-x64.exe
 
-  tests_on_alpine_x86_64:
-    name: Tests on Alpine (x86_64 and i686)
+  tests_on_alpine_x86_64_and_i686:
+    strategy:
+      matrix:
+        arch:
+          - name: x86_64
+            image: alpine
+          - name: i686
+            image: i386/alpine
+    name: Tests on Alpine (${{ matrix.arch.name }})
     runs-on: ubuntu-latest
-    container: alpine
+    container: ${{ matrix.arch.image }}
     steps:
     - name: Install packages
       run: |
